@@ -6,8 +6,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 # Load data
+@st.cache
 def load_data():
-    data = pd.read_csv("main_data.csv")
+    data = pd.read_csv("data/day.csv")
     return data
 
 data = load_data()
@@ -17,7 +18,7 @@ st.title('Dashboard Analisis Data: Bike Sharing Dataset')
 
 # Sidebar
 st.sidebar.header('Pertanyaan Bisnis')
-question = st.sidebar.selectbox('Pilih Pertanyaan Bisnis:', ('Pertanyaan 1', 'Pertanyaan 2', 'Hasil Clustering K-Means'))
+question = st.sidebar.selectbox('Pilih Pertanyaan Bisnis:', ('Pertanyaan 1', 'Pertanyaan 2'))
 
 # Data Wrangling
 ## Cleaning Data
@@ -48,12 +49,12 @@ if question == 'Pertanyaan 1':
     
     # Scatter plot untuk hubungan suhu dan jumlah pengguna sepeda
     st.write("Scatter Plot: Hubungan Suhu dan Jumlah Pengguna Sepeda")
-    fig, ax = plt.subplots()
-    ax.scatter(data['temp'], data['cnt'], c=data['hum'], cmap='viridis', alpha=0.5)
-    ax.set_xlabel('Suhu (temp)')
-    ax.set_ylabel('Jumlah Pengguna Sepeda (cnt)')
-    ax.set_title('Scatter Plot: Hubungan Suhu dan Jumlah Pengguna Sepeda')
-    st.pyplot(fig)
+    scatter = plt.scatter(data['temp'], data['cnt'], c=data['hum'], cmap='viridis', alpha=0.5)
+    plt.xlabel('Suhu (temp)')
+    plt.ylabel('Jumlah Pengguna Sepeda (cnt)')
+    plt.title('Scatter Plot: Hubungan Suhu dan Jumlah Pengguna Sepeda')
+    plt.colorbar(scatter, label='Humidity')
+    st.pyplot()
 
 elif question == 'Pertanyaan 2':
     st.subheader('Pertanyaan 2: Bagaimana cuaca memengaruhi penggunaan sepeda?')
@@ -64,14 +65,12 @@ elif question == 'Pertanyaan 2':
     
     # Scatter plot untuk hubungan cuaca dan jumlah pengguna sepeda
     st.write("Visualisasi scatter plot untuk cuaca dan jumlah pengguna sepeda")
-    fig, ax = plt.subplots()
-    ax.scatter(data['weathersit'], data['cnt'], alpha=0.5)
-    ax.set_xlabel('cuaca')
-    ax.set_ylabel('Jumlah pengguna sepeda')
-    ax.set_title('Visualisasi scatter plot untuk cuaca dan jumlah pengguna sepeda')
-    st.pyplot(fig)
+    scatter = plt.scatter(data['weathersit'], data['cnt'], alpha=0.5)
+    plt.xlabel('cuaca')
+    plt.ylabel('Jumlah pengguna sepeda')
+    plt.title('Visualisasi scatter plot untuk cuaca dan jumlah pengguna sepeda')
+    st.pyplot(scatter)
 
-elif question =='Hasil Clustering K-Means':
     # K-means Clustering
     st.subheader('Analisis Clustering Menggunakan K-means')
     
@@ -92,13 +91,11 @@ elif question =='Hasil Clustering K-Means':
     silhouette_avg = silhouette_score(X, labels)
     st.write("Silhouette Score:", silhouette_avg)
 
-    # Interpretasi hasil clustering
-
     # Visualisasi hasil clustering
     st.write("Visualisasi hasil clustering")
-    fig, ax = plt.subplots()
-    scatter = ax.scatter(X['temp'], X['cnt'], c=labels, cmap='viridis', alpha=0.5)
-    ax.set_xlabel('Suhu (temp)')
-    ax.set_ylabel('Jumlah Pengguna Sepeda (cnt)')
-    ax.set_title('K-means Clustering: Hubungan Suhu dan Jumlah Pengguna Sepeda')
-    st.pyplot(fig)
+    scatter = plt.scatter(X['temp'], X['cnt'], c=labels, cmap='viridis', alpha=0.5)
+    plt.xlabel('Suhu (temp)')
+    plt.ylabel('Jumlah Pengguna Sepeda (cnt)')
+    plt.colorbar(scatter, label='Cluster')
+    plt.title('K-means Clustering: Hubungan Suhu dan Jumlah Pengguna Sepeda')
+    st.pyplot()
